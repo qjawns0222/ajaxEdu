@@ -16,7 +16,12 @@ public class DB {
 		try {
 			Context init=new InitialContext();
 			dataSource=(DataSource)init.lookup("java:comp/env/jdbc/myOracle");
-			
+			try {
+				System.out.println(dataSource.getConnection());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}catch(NamingException e) {e.printStackTrace();}
 	}
 	private DB(){}

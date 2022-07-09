@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>댓글 게시판</title>
 <script type="text/javascript" src="ajax.js"></script>
+<script type="text/javascript" src="loadxml.js"></script>
 <script type="text/javascript">
 /*글 목록 보여주기  */
 window.onload=function(){
@@ -18,7 +19,9 @@ function loadCommentResult(req){
 		if(req.status==200){
 			var xmlDoc=req.responseXML;
 			xmlDoc.async="false";
-			xmlDoc.loadXML(req.responseText);
+			BuildXMLFromString(req.responseText);
+			//xmlDoc.loadXML(req.responseText);
+			//xmlDoc=(new DOMParser()).parseFromString(req.responseText, "text/xml");
 			xmlDoc=xmlDoc.documentElement;
 			var code=xmlDoc.getElementsByTagName('code').item(0).firstChild.nodeValue;
 			if(code=='success'){
@@ -61,7 +64,9 @@ function addResult(req){
 		if(req.status==200){
 			var xmlDoc=req.responseXML;
 			xmlDoc.async="false";
-			xmlDoc.loadXML(req.responseText);
+			//xmlDoc.loadXML(req.responseText);
+			BuildXMLFromString(req.responseText);
+			//xmlDoc=(new DOMParser()).parseFromString(req.responseText, "text/xml");
 			xmlDoc=xmlDoc.documentElement;
 			var code=xmlDoc.getElementsByTagName('code').item(0).firstChild.nodeValue;
 			if(code=='success'){
@@ -78,12 +83,14 @@ function addResult(req){
 				alert('에러발생:'+message);
 			}
 		}else{
+			
 			alert('서버 에러 발생:'+req.status);
 		}
 	}
 }
 	/* 수정  */
 function updateComment(req){
+	console.log("uc");
 	var id=document.updateForm.id.value;
 	var name=document.updateForm.name.value;
 	var content=document.updateForm.content.value;
@@ -97,9 +104,10 @@ function updateComment(req){
 function updateResult(req){
 	if(req.readyState==4){
 		if(req.status==200){
+			console.log("ur");
 			var xmlDoc=req.responseXML;
 			xmlDoc.async="false";
-			xmlDoc.loadXML(req.responseText);
+			BuildXMLFromString(req.responseText);
 			xmlDoc=xmlDoc.documentElement;
 			var code=xmlDoc.getElementsByTagName('code').item(0).firstChild.nodeValue;
 			if(code=='success'){
@@ -120,13 +128,14 @@ function updateResult(req){
 	}
 }
 	function viewUpdateForm(commentId){
+		console.log("uf");
 		var commentDiv=document.getElementById('c'+commentId);
 		var updateFormDiv=document.getElementById('commentUpdate');
 		if(updateFormDiv.parentNode!=commentDiv){
 			updateFormDiv.parentNode.removeChild(updateFormDiv);
 			commentDiv.appendChild(updateFormDiv);
 		}
-		var comment=cmmentDiv.comment;
+		var comment=commentDiv.comment;
 		document.updateForm.id.value=comment.id;
 		document.updateForm.name.value=comment.name;
 		document.updateForm.content.value=comment.content;
@@ -150,12 +159,12 @@ function confirmDelection(commentId){
 		new ajax.xhr.Request('commentdelete.jsp',params,removeResult,'POST');
 	}
 }
-function remveResult(req){
+function removeResult(req){
 	if(req.readyState==4){
 		if(req.status==200){
 			var xmlDoc=req.responseXML;
 			xmlDoc.async="false";
-			xmlDoc.loadXML(req.responseText);
+			BuildXMLFromString(req.responseText);
 			xmlDoc=xmlDoc.documentElement;
 			var code=xmlDoc.getElementsByTagName('code').item(0).firstChild.nodeValue;
 			if(code=='success'){
@@ -188,6 +197,7 @@ function remveResult(req){
 <input type="hidden" name="id" value=""/>
 이름:<input type="text" name="name" size="10"/><br/>
 내용:<textarea name="content" cols="20" rows="2"></textarea><br/>
+	<input type="button" value="수정" onclick="updateComment()"/>
 	<input type="button" value="등록" onclick="cancelUpdate()"/>
 </form>
 

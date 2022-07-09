@@ -17,7 +17,7 @@ function log(msg){
 		console.innerHTML+=msg+"<br/>";
 	}
 }
-
+var req=null;
 ajax.xhr.Request.prototype={
 	getXMLHttpRequest:function(){
 		if(window.ActiveXObject){
@@ -35,7 +35,7 @@ ajax.xhr.Request.prototype={
 		}
 	},
 	send:function(){
-	
+		console.log("aj");
 		this.req=this.getXMLHttpRequest();
 		var httpMethod=this.method?this.method:'GET';
 		if(httpMethod!='GET'&&httpMethod!="POST"){
@@ -52,6 +52,7 @@ ajax.xhr.Request.prototype={
 		this.req.onreadystatechange=function(){
 			request.onStateChange.call(request);
 		}
+		
 		this.req.send(httpMethod=='POST'?httpParams:null);
 },
 onStateChange:function(){
